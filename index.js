@@ -131,6 +131,33 @@ app.post("/user/signup", async (req, res) => {
   }
 });
 
+app.post("/user/login", async (req, res) => {
+  try {
+    if (req.fields.email && req.fields.password) {
+      const checkUser = await User.findOne({ email: req.fields.email });
+
+      if (checkUser) {
+        const { hash, salt, token, username } = checkUser;
+        const checkPassword = SHA256(req.fields.password + salt).toString(
+          encBase64
+        );
+
+        if (checkPassword === hash) {
+          res.json({ token: token, username: username });
+        } else {
+          res.status(400).json({ message: "Invalid password or mail" });
+        }
+      } else {
+        res.status(400).json({ message: "Unauthorized" });
+      }
+    } else {
+      res.status(400).json({ message: "missing fields" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 app.get("/", async (req, res) => {
   res.status(400).json("Page introuvable");
 });
