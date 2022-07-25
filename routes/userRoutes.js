@@ -5,6 +5,8 @@ const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 const uid2 = require("uid2");
 
+const User = require("../Models/user.js");
+
 router.post("/user/signup", async (req, res) => {
   try {
     if (req.fields.email && req.fields.username && req.fields.password) {
@@ -44,6 +46,8 @@ router.post("/user/signup", async (req, res) => {
 router.post("/user/login", async (req, res) => {
   try {
     if (req.fields.email && req.fields.password) {
+      console.log(req.fields);
+
       const checkUser = await User.findOne({
         email: req.fields.email.toLowerCase(),
       });

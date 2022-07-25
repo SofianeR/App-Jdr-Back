@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+const User = require("../Models/user.js");
+const Character = require("../Models/character.js");
+
 router.post("/character/create", async (req, res) => {
   try {
     const { generalInfo, characteristics, token } = req.fields;
