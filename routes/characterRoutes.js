@@ -4,24 +4,45 @@ const router = express.Router();
 const User = require("../Models/user.js");
 const Character = require("../Models/character.js");
 
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
 router.post("/character/create", async (req, res) => {
   try {
-    const { generalInfo, characteristics, token } = req.fields;
+    const { characterSheet, token } = req.fields;
 
-    console.log(generalInfo, characteristics, token);
+    const character = JSON.parse(characterSheet);
 
-    if (generalInfo && characteristics && token) {
+    const { picture } = req.files;
+
+    if (character && token) {
       const checkUser = await User.findOne({ token: req.fields.token });
 
       if (checkUser) {
         const newCharacter = new Character({
-          name: generalInfo.name,
-          class: generalInfo.class,
-          race: generalInfo.race,
-          alignment: generalInfo.alignment,
+          name: character.name,
+          description: character.flavorText,
 
-          characteristics: characteristics,
+          alignment: character.alignment,
+
+          race: character.race,
+          classe: character.classe,
+
+          characteristics: character.characteristics,
+
+          spells: character.spellList,
         });
+
+        if (picture) {
+          const result = await cloudinary.uploader.upload(picture.path);
+
+          newCharacter.picture = result.secure_url;
+        }
 
         checkUser.characters.push(newCharacter);
 
@@ -47,7 +68,7 @@ router.post("/character/all", async (req, res) => {
       token: req.fields.token,
     }).populate("characters");
 
-    console.log(UserInfo);
+    console.log(UserInfo.characters);
 
     const countCharacter = await User.findOne({ token: req.fields.token })
       .populate("characters")
