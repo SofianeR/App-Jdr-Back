@@ -183,7 +183,7 @@ app.get("/", async (req, res) => {
 // });
 
 app.get("/spells", async (req, res) => {
-  console.log(req.query.classe);
+  // console.log(req.query.classe);
 
   let filterObject = {};
 

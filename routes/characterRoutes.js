@@ -50,6 +50,8 @@ router.post("/character/create", async (req, res) => {
 
         await checkUser.save();
 
+        // console.log(newCharacter);
+
         res.json(newCharacter);
       } else {
         res.status(401).json({ message: "can't find user" });
@@ -68,7 +70,7 @@ router.post("/character/all", async (req, res) => {
       token: req.fields.token,
     }).populate("characters");
 
-    console.log(UserInfo.characters);
+    // console.log(UserInfo.characters);
 
     const countCharacter = await User.findOne({ token: req.fields.token })
       .populate("characters")

@@ -19,7 +19,7 @@ router.post("/user/signup", async (req, res) => {
         const token = uid2(32);
         const hash = SHA256(req.fields.password + salt).toString(encBase64);
 
-        console.log(req.fields.email, req.fields.email.toLowerCase());
+        // console.log(req.fields.email, req.fields.email.toLowerCase());
 
         const newUser = new User({
           email: req.fields.email.toLowerCase(),
@@ -46,13 +46,13 @@ router.post("/user/signup", async (req, res) => {
 router.post("/user/login", async (req, res) => {
   try {
     if (req.fields.email && req.fields.password) {
-      console.log(req.fields);
+      // console.log(req.fields);
 
       const checkUser = await User.findOne({
         email: req.fields.email.toLowerCase(),
       });
 
-      console.log(checkUser);
+      // console.log(checkUser);
 
       if (checkUser) {
         const { hash, salt, token, username } = checkUser;
